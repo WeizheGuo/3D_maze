@@ -85,7 +85,7 @@ Maze.prototype.findPath = function() {
     while(1) {
         tmp = curr.getNeighbor();
         if(tmp === 0) {
-            console.log('路径找寻结束');
+            //console.log('finish path finding');
             break;
         } else if(tmp === 1) {
             curr = curr.parent;
@@ -133,7 +133,7 @@ function drawStartEnd() {
     }, 3000);
 }
 
-/**        绘制2D底图结束，开始获取墙面信息           **/
+// finishing drawing 2d maze, getting wall info now
 var rowWall = [];
 var colWall = [];
 var pixData;
@@ -153,13 +153,13 @@ function getRowWall() {
         j = 0;
         while(j < width) {
             if(isBlack(j, i)) {
-                x1 = j; // 记录横墙开始点
+                x1 = j; // store the start pos of row wall
                 
                 j += 10;
                 while(isBlack(j, i) && j < width) {
                     j += 10;
                 }
-                x2 = j; // 记录横墙结束点
+                x2 = j; // store the end pos of row wall
                 if((x2 - x1) > 10) {
                     rowWall[i].push({
                         x1: 2 * (x1 / width) - 1,
@@ -181,13 +181,13 @@ function getColWall() {
         j = 0;
         while(j < height) {
             if(isBlack(i, j)) {
-                y1 = j; // 记录竖墙开始点
+                y1 = j; // store the start pos of column wall
                 
                 j += 10;
                 while(isBlack(i, j) && j < height) {
                     j += 10;
                 }
-                y2 = j; // 记录竖墙结束点
+                y2 = j; // store the end pos of column wall
                 if((y2 - y1) > 10) {
                     colWall[i].push({
                         y1: 2 * (y1 / height) - 1,

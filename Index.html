@@ -12,21 +12,21 @@
 
         uniform bool isMaze;
         uniform mat4 uPMatrix;
-        uniform mat4 uMVMatrix; // 模型变换
+        uniform mat4 uMVMatrix; // model view matrix
 
-        uniform mat4 uCMVMatrix; // 摄像机位移
-        uniform mat4 uCRMatrix; // 摄像机旋转
+        uniform mat4 uCMVMatrix; // camera
+        uniform mat4 uCRMatrix; // 
 
         varying highp vec3 vLighting;
 
         varying vec4 vColor;
         varying vec2 vMp;
-        varying vec4 uspec;
+        varying vec4 uspec; // varaibles passing data to the next fragment shader
         varying vec4 utotal;
 
 
         void main() {
-            float uAmbient = 0.8;
+            float uAmbient = 0.9;
             vec3 lightDirection = normalize(vec3(-1.0, 1.5, 2.0));
             vec4 po = uMVMatrix * vec4(aVertex, 1.0);
             gl_Position = uPMatrix * uCRMatrix * uCMVMatrix * po;

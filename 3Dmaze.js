@@ -38,8 +38,8 @@ var uCMVMatrix = webgl.getUniformLocation(program, 'uCMVMatrix');
 var uTex = webgl.getUniformLocation(program, 'uTex');
 var isMaze = webgl.getUniformLocation(program, 'isMaze');
 
-program.lightDirection = webgl.getUniformLocation(program, 'lightDirection');
-webgl.uniform3fv(program.lightDirection, normalize([-1.0, 1.5, 2.0]));
+// program.lightDirection = webgl.getUniformLocation(program, 'lightDirection');
+// webgl.uniform3fv(program.lightDirection, normalize([-1.0, 1.5, 2.0]));
 
 function normalize(a){
 	var sum = 0;
@@ -111,17 +111,17 @@ pn_data = [];
 
 var k;
 
-// k1和k2算作Z轴
+// k1 and k2 are z axis
 for(i = 0; i < rowWall.length; i += 10) { // rowWall.length
     item = rowWall[i];
     while((tmp = item.pop())) {
         k1 = (2 * i / height) - 1;
         k2 = (2 * (i + 10) / height) - 1;
         po_data.push.apply(po_data, [
-            tmp.x1*120+0.01, -1.09, k1*120, // 左下
-            tmp.x2*120+0.01, -1.09, k1*120, // 右下
-            tmp.x2*120+0.01, 0.2, k1*120, // 右上
-            tmp.x1*120+0.01, 0.2, k1*120, // 左上
+            tmp.x1*120+0.01, -1.09, k1*120, // left bottom
+            tmp.x2*120+0.01, -1.09, k1*120, // right bottom
+            tmp.x2*120+0.01, 0.2, k1*120, // right up
+            tmp.x1*120+0.01, 0.2, k1*120, // right up
 
             tmp.x2*120+0.01, -1.09, k1*120,
             tmp.x2*120+0.01, -1.09, k2*120,
@@ -143,7 +143,7 @@ for(i = 0; i < rowWall.length; i += 10) { // rowWall.length
             tmp.x2*120+0.01, 0.2, k2*120,
             tmp.x1*120+0.01, 0.2, k1*120
         ]);
-        // new here
+        // recording normals of each row wall
         pn_data.push.apply(pn_data,[
             0, 0, -1,
             0, 0, -1,
@@ -240,17 +240,17 @@ pn_data = [];
 mp_data = [];
 index_data = [];
 
-// k1和k2算作X轴
+// k1 and k2 are x axis
 for(i = 0; i < colWall.length; i += 10) {
     item = colWall[i];
     while((tmp = item.pop())) {
         k1 = 2 * (i / width) - 1;
         k2 = 2 * ((i + 10) / width) - 1;
         po_data.push.apply(po_data, [
-            k1*120, -1.09, tmp.y1*120+0.01, // 前下
-            k1*120, -1.09, tmp.y2*120+0.01, // 后下
-            k1*120, 0.2, tmp.y2*120+0.01, // 后上
-            k1*120, 0.2, tmp.y1*120+0.01, // 前上
+            k1*120, -1.09, tmp.y1*120+0.01, // front bottom
+            k1*120, -1.09, tmp.y2*120+0.01, // back bottom
+            k1*120, 0.2, tmp.y2*120+0.01, // back up
+            k1*120, 0.2, tmp.y1*120+0.01, // front up
 
             k1*120, -1.09, tmp.y1*120+0.01,
             k2*120, -1.09, tmp.y1*120+0.01,
@@ -453,10 +453,10 @@ function draw(a) {
     if(KEYS[DOWN])
         camera.move(-0.2);
 
-    // 绘制地板
+    // draw the floor
     drawGround();
 
-    // 绘制迷宫
+    // draw the maze
     drawMaze(a);
 }
 
@@ -540,8 +540,7 @@ function drawGround() {
     webgl.drawElements(webgl.TRIANGLES, 6, webgl.UNSIGNED_SHORT, 0);
 }
 
-/**        绘制3D迷宫完毕，摄像头处理           **/
-
+// finished drawing the maze, and deal with camera now
 var cx, cy, ret;
 
 var globalRot = window.innerWidth / 2;
@@ -551,7 +550,7 @@ var camera = {
     y: 0,
     z: 0,
     move: function(e){
-        // 移动时需要做朝向计算
+        // calculate the facing direction after moving
         cx = Math.sin(-this.rot) * e;
         cy = Math.cos(-this.rot) * e;
 
@@ -559,7 +558,7 @@ var camera = {
         this.x += cx;
         this.z += cy;
 
-        ret = role.check(-this.x/120, this.z/242, -cx, cy); // 后两个参数代表方向
+        ret = role.check(-this.x/120, this.z/242, -cx, cy); // the last two parameters represent the direction
 
         if(ret.x === 0) {
             this.x -= cx;
@@ -581,7 +580,7 @@ var camera = {
             x = this.x,
             z = this.z;
 
-        // 无Y轴相关变化
+        // no y axis change
         return [
             c, 0, -s, 0,
             0, 1, 0, 0,
@@ -606,7 +605,7 @@ document.onkeydown = function(e) {
         if(isInCheats) {
             closeCheats();
         } else {
-            console.log('开始输入秘籍');
+            console.log('cheat');
             doCheats();
         }
 
@@ -650,11 +649,11 @@ document.onmousemove = function(e) {
 //     var cheat = document.getElementById('cheat');
 
 //     if(cheat.value.toLowerCase() === 'alloyteam') {
-//         console.log('开启秘籍');
+//         console.log('cheat start');
 //         role.show();
 //         document.body.removeChild(div);
 //     } else {
-//         console.log('密令错误');
+//         console.log('wrong command');
 //         cheat.value = '';
 //         cheat.blur();
 //         div.style.transform = 'translateY(150%)';
