@@ -147,7 +147,7 @@ function getRowWall() {
     var i = 0;
     var j = 0;
     var x1, x2;
-    console.log('getRowWall');
+    //console.log('getRowWall');
     for(; i < height; i += 10) {
         rowWall[i] = [];
         j = 0;
@@ -175,7 +175,7 @@ function getColWall() {
     var i = 0;
     var j = 0;
     var y1, y2;
-    console.log('getRowWall');
+    //console.log('getColWall');
     for(; i < width; i += 10) {
         colWall[i] = [];
         j = 0;
