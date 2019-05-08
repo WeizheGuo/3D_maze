@@ -28,6 +28,7 @@ webgl.linkProgram(program);
 webgl.useProgram(program);
 
 var aVertex = webgl.getAttribLocation(program, 'aVertex');
+var nVertex = webgl.getAttribLocation(program, 'aVertexNormal')
 var aColor = webgl.getAttribLocation(program, 'aColor');
 var aMp = webgl.getAttribLocation(program, 'aMp');
 var uPMatrix = webgl.getUniformLocation(program, 'uPMatrix');
@@ -36,8 +37,8 @@ var uCRMatrix = webgl.getUniformLocation(program, 'uCRMatrix');
 var uCMVMatrix = webgl.getUniformLocation(program, 'uCMVMatrix');
 var uTex = webgl.getUniformLocation(program, 'uTex');
 var isMaze = webgl.getUniformLocation(program, 'isMaze');
-var aNormal = webgl.getAttribLocation(program, "aNormal");
-var lightDirection = webgl.getUniformLocation(program, "lightDirection");
+
+program.lightDirection = webgl.getUniformLocation(program, 'lightDirection');
 webgl.uniform3fv(program.lightDirection, normalize([-1.0, 1.5, 2.0]));
 
 function normalize(a){
@@ -53,11 +54,11 @@ function normalize(a){
 	return outArr;
 }
 
-var ambi = webgl.getUniformLocation(program, "uAmbient");
-webgl.uniform1f(program.ambi, 0.2);
+// program.ambi = webgl.getUniformLocation(program, "uAmbient");
+// webgl.uniform1f(program.ambi, 0.2);
 
 webgl.enableVertexAttribArray(aVertex);
-webgl.enableVertexAttribArray(aNormal);
+webgl.enableVertexAttribArray(nVertex);
 webgl.disableVertexAttribArray(aColor);
 webgl.enableVertexAttribArray(aMp);
 
@@ -69,6 +70,9 @@ var s = 0;
 var k;
 var count = 0;
 
+// new edit here
+var pn_data = [];
+
 var ground = Object.create(null);
 po_data = [
     -20, -1.1, 20,
@@ -76,13 +80,25 @@ po_data = [
     20, -1.1, -20,
     -20,-1.1,-20
 ];
+
+pn_data = [
+    0, 1, 0,
+    0, 1, 0,
+    0, 1, 0,
+    0, 1, 0
+]
+
 index_data = [0, 1, 2, 2, 3, 0];
 
 ground.poBuf = webgl.createBuffer();
 
 webgl.bindBuffer(webgl.ARRAY_BUFFER, ground.poBuf);
 webgl.bufferData(webgl.ARRAY_BUFFER, new Float32Array(po_data), webgl.STATIC_DRAW);
+//new
+ground.pnBuf = webgl.createBuffer();
 
+webgl.bindBuffer(webgl.ARRAY_BUFFER, ground.pnBuf);
+webgl.bufferData(webgl.ARRAY_BUFFER, new Float32Array(pn_data), webgl.STATIC_DRAW);
 
 ground.indexBuf = webgl.createBuffer();
 
@@ -91,6 +107,7 @@ webgl.bufferData(webgl.ELEMENT_ARRAY_BUFFER, new Uint16Array(index_data), webgl.
 
 po_data = [];
 index_data = [];
+pn_data = [];
 
 var k;
 
@@ -125,6 +142,33 @@ for(i = 0; i < rowWall.length; i += 10) { // rowWall.length
             tmp.x2*120+0.01, 0.2, k1*120,
             tmp.x2*120+0.01, 0.2, k2*120,
             tmp.x1*120+0.01, 0.2, k1*120
+        ]);
+        // new here
+        pn_data.push.apply(pn_data,[
+            0, 0, -1,
+            0, 0, -1,
+            0, 0, -1,
+            0, 0, -1,
+
+            1, 0, 0,
+            1, 0, 0,
+            1, 0, 0,
+            1, 0, 0,
+
+            0, 0, 1,
+            0, 0, 1,
+            0, 0, 1,
+            0, 0, 1,
+
+            -1, 0, 0,
+            -1, 0, 0,
+            -1, 0, 0,
+            -1, 0, 0,
+
+            0, 1, 0,
+            0, 1, 0,
+            0, 1, 0,
+            0, 1, 0,
         ]);
 
         count += (6*5);
@@ -171,6 +215,12 @@ maze.row.poBuf = webgl.createBuffer();
 webgl.bindBuffer(webgl.ARRAY_BUFFER, maze.row.poBuf);
 webgl.bufferData(webgl.ARRAY_BUFFER, new Float32Array(po_data), webgl.STATIC_DRAW);
 
+// new edit
+maze.row.pnBuf = webgl.createBuffer();
+
+webgl.bindBuffer(webgl.ARRAY_BUFFER, maze.row.pnBuf);
+webgl.bufferData(webgl.ARRAY_BUFFER, new Float32Array(pn_data), webgl.STATIC_DRAW);
+
 maze.row.mpBuf = webgl.createBuffer();
 
 webgl.bindBuffer(webgl.ARRAY_BUFFER, maze.row.mpBuf);
@@ -184,6 +234,9 @@ webgl.bufferData(webgl.ELEMENT_ARRAY_BUFFER, new Uint16Array(index_data), webgl.
 s = 0;
 count = 0;
 po_data = [];
+
+pn_data = [];
+
 mp_data = [];
 index_data = [];
 
@@ -218,6 +271,33 @@ for(i = 0; i < colWall.length; i += 10) {
             k1*120, 0.2, tmp.y2*120+0.01,
             k2*120, 0.2, tmp.y2*120+0.01,
             k2*120, 0.2, tmp.y1*120+0.01
+        ]);
+
+        pn_data.push.apply(pn_data,[
+            -1, 0, 0,
+            -1, 0, 0,
+            -1, 0, 0,
+            -1, 0, 0,
+
+            0, 0, -1,
+            0, 0, -1,
+            0, 0, -1,
+            0, 0, -1,
+
+            1, 0, 0,
+            1, 0, 0,
+            1, 0, 0,
+            1, 0, 0,
+
+            0, 0, 1,
+            0, 0, 1,
+            0, 0, 1,
+            0, 0, 1,
+
+            0, 1, 0,
+            0, 1, 0,
+            0, 1, 0,
+            0, 1, 0,
         ]);
 
         count += (6*5);
@@ -264,6 +344,12 @@ maze.col.poBuf = webgl.createBuffer();
 
 webgl.bindBuffer(webgl.ARRAY_BUFFER, maze.col.poBuf);
 webgl.bufferData(webgl.ARRAY_BUFFER, new Float32Array(po_data), webgl.STATIC_DRAW);
+
+// new edit
+maze.col.pnBuf = webgl.createBuffer();
+
+webgl.bindBuffer(webgl.ARRAY_BUFFER, maze.col.pnBuf);
+webgl.bufferData(webgl.ARRAY_BUFFER, new Float32Array(pn_data), webgl.STATIC_DRAW);
 
 maze.col.mpBuf = webgl.createBuffer();
 
@@ -394,6 +480,10 @@ function drawMaze(a) {
 
     webgl.bindBuffer(webgl.ARRAY_BUFFER, maze.row.poBuf);
     webgl.vertexAttribPointer(aVertex, 3, webgl.FLOAT, false, 0, 0);
+    // new here
+    webgl.bindBuffer(webgl.ARRAY_BUFFER, maze.row.pnBuf);
+    webgl.vertexAttribPointer(nVertex, 3, webgl.FLOAT, false, 0, 0);
+
 
     webgl.bindBuffer(webgl.ARRAY_BUFFER, maze.row.mpBuf);
     webgl.vertexAttribPointer(aMp, 2, webgl.FLOAT, false, 0, 0);
@@ -408,6 +498,9 @@ function drawMaze(a) {
 
     webgl.bindBuffer(webgl.ARRAY_BUFFER, maze.col.poBuf);
     webgl.vertexAttribPointer(aVertex, 3, webgl.FLOAT, false, 0, 0);
+    // new here
+    webgl.bindBuffer(webgl.ARRAY_BUFFER, maze.col.pnBuf);
+    webgl.vertexAttribPointer(nVertex, 3, webgl.FLOAT, false, 0, 0);
 
     webgl.bindBuffer(webgl.ARRAY_BUFFER, maze.col.mpBuf);
     webgl.vertexAttribPointer(aMp, 2, webgl.FLOAT, false, 0, 0);
@@ -420,7 +513,7 @@ function drawMaze(a) {
 }
 
 function drawGround() {
-    webgl.vertexAttrib3f(aColor, 0.0, 0.0, 0.0);
+    webgl.vertexAttrib3f(aColor, 0.8, 0.8, 0.8);
 
     webgl.uniformMatrix4fv(
         uMVMatrix, false, [15,0,0,0, 0,5,0,0, 0,0,15,0, 0,0,-100,1]
@@ -438,6 +531,9 @@ function drawGround() {
 
     webgl.bindBuffer(webgl.ARRAY_BUFFER, ground.poBuf);
     webgl.vertexAttribPointer(aVertex, 3, webgl.FLOAT, false, 0, 0);
+    // new here
+    webgl.bindBuffer(webgl.ARRAY_BUFFER, ground.pnBuf);
+    webgl.vertexAttribPointer(nVertex, 3, webgl.FLOAT, false, 0, 0);
 
     webgl.bindBuffer(webgl.ELEMENT_ARRAY_BUFFER, ground.indexBuf);
 
@@ -677,7 +773,7 @@ Role.prototype.pointCheck = function(x, y, cx, cy) {
         start = y * width * 4 + x * 4;
         r = pixData[start];
         if(r === 0) {
-            drawDebug(x, y, 'yellow');
+            drawDebug(x, y, 'blue');
             retX = false;
         }
     }
@@ -688,7 +784,7 @@ Role.prototype.pointCheck = function(x, y, cx, cy) {
         start = y * width * 4 + x * 4;
         r = pixData[start];
         if(r === 0) {
-            drawDebug(x, y, 'yellow');
+            drawDebug(x, y, 'blue');
             retY = false;
         }
     }
@@ -707,7 +803,7 @@ Role.prototype.check = function(x, y, cx, cy) {
     cx = Math.abs(cx) < 0.01 ? 0 : cx / Math.abs(cx);
     cy = Math.abs(cy) < 0.01 ? 0 : cy / Math.abs(cy);
 
-    drawDebug(this.y >> 0, this.x >> 0, 'green');
+    drawDebug(this.y >> 0, this.x >> 0, 'yellow');
     ret = this.isWall(cy, cx);
 
     data = {

@@ -230,7 +230,7 @@ function getRowWall() {
         }
     }
 
-    console.log(rowWall.length);
+    //console.log(rowWall.length);
 }
 
 function getColWall() {

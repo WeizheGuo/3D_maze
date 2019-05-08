@@ -8,6 +8,8 @@
         attribute vec3 aColor;
         attribute vec2 aMp;
 
+        attribute vec3 aVertexNormal;
+
         uniform bool isMaze;
         uniform mat4 uPMatrix;
         uniform mat4 uMVMatrix; // 模型变换
@@ -15,18 +17,49 @@
         uniform mat4 uCMVMatrix; // 摄像机位移
         uniform mat4 uCRMatrix; // 摄像机旋转
 
-        varying vec3 vColor;
+        varying highp vec3 vLighting;
+
+        varying vec4 vColor;
         varying vec2 vMp;
+        varying vec4 uspec;
+        varying vec4 utotal;
+
+
         void main() {
+            float uAmbient = 0.8;
+            vec3 lightDirection = normalize(vec3(-1.0, 1.5, 2.0));
             vec4 po = uMVMatrix * vec4(aVertex, 1.0);
-
-            if(isMaze) {
-                vMp = aMp;
-            } else {
-                vColor = aColor;
-            }
-
             gl_Position = uPMatrix * uCRMatrix * uCMVMatrix * po;
+
+            vec3 oNormal = (normalize(vec4(aVertexNormal, 1.0)).xyz);
+            
+
+            float total = dot(lightDirection, oNormal)*(1.0-uAmbient);
+            float spec = pow(dot(oNormal, (normalize(gl_Position).xyz + lightDirection)/2.0), 5.0)*5.0;
+            if(spec < 0.0){
+                spec = 0.0;
+            }
+            
+            if(total > 0.0){
+                if(isMaze) {
+                    vMp = aMp;
+                } else {
+                    vColor = vec4(aColor, 1.0)*vec4(total+uAmbient, total+uAmbient, total+uAmbient, 1.0) + vec4(spec, spec, spec, 0.0);
+                }
+                utotal = vec4(total+uAmbient, total+uAmbient, total+uAmbient, 1.0);
+                uspec = vec4(spec, spec, spec, 0.0);
+            }else{
+                if(isMaze) {
+                    vMp = aMp;
+                } else {
+                    vColor = vec4(aColor, 1.0)*vec4(uAmbient, uAmbient, uAmbient, 1.0);
+                }
+                utotal = vec4(uAmbient, uAmbient, uAmbient, 1.0);
+                uspec = vec4(0, 0, 0, 0);
+            }
+        
+
+
         }
     </script>
 
@@ -36,17 +69,19 @@
         uniform bool isMaze;
         uniform sampler2D uTex;
 
-        uniform float uAmbient;
-        uniform vec3 lightDirection;
-
-        varying vec3 vColor;
+        varying vec4 vColor;
+        varying highp vec3 vLighting;
+        varying vec4 uspec;
+        varying vec4 utotal;
 
         varying vec2 vMp;
         void main() {
             if(isMaze) {
-                gl_FragColor = texture2D(uTex, vMp);
+                float uAmbient = 0.2;
+                gl_FragColor = texture2D(uTex, vMp)* utotal + uspec;
             } else {
-                gl_FragColor = vec4(vColor, 1.0);
+                gl_FragColor = vColor;
+                
             }
         }
     </script>
