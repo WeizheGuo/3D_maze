@@ -100,56 +100,25 @@
             display: block;
             margin: 0 auto;
         }
-        .aim {
-            position: absolute;
-            pointer-events: none;
-            background-image: url(./aim.png);
-            width: 51px;
-            height: 52px;
-            left: 50%;
-            top: 630px;
-            transform: translate(-50%, -50%);
-            opacity: 0.5;
-        }
+
         .role {
-            width: 8px;
-            height: 8px;
+            width: 15px;
+            height: 15px;
             border-radius: 50%;
-            background-color: red;
+            background-color: blue;
             position: absolute;
             transition-property: opacity;
             transition-duration: 1s;
         }
-        .cheat_wrap {
-            width: 200px;
-            height: 30px;
-            position: absolute;
-            transition-property: transform;
-            transition-duration: .5s;
-            left: 10px;
-            bottom: 10px;
-            transform: translateY(150%);
-            border: 1px solid black;
-            border-radius: 6px;
-            overflow: hidden;
-            display: none;
-        }
-        .cheat {
-            width: 100%;
-            height: 30px;
-            border: 0;
-            font-size: 18px;
-            line-height: 30px;
-        }
+
     </style>
 </head>
 <body>
-    <canvas id="c2d" class="c2d" width="390" height="290"></canvas>
-    <canvas id="c3d" class="c3d" width="800" height="600"></canvas>
-    <div class="aim"></div>
-    <div class="cheat_wrap" id="cheatWrap">
-        <input type="text" id="cheat" class="cheat" placeholder="请输入秘籍" />
-    </div>
+    <h1>Weizhe Guo's Computer Graphic Project2 -- 3D Maze</h1>
+    <h2>2D Mini-Map</h2>
+    <canvas id="c2d" class="c2d" width="290" height="190"></canvas>
+    <h2>3D Maze</h2>
+    <canvas id="c3d" class="c3d" width="900" height="600"></canvas>
 </body>
 <script type="text/javascript" src="./2Dmaze.js"></script>
 <script type="text/javascript" src="./3Dmaze.js"></script>

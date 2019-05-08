@@ -440,8 +440,8 @@ imgCol.onload = function() {
     }
 };
 
-imgRow.src = './wall_256.jpg';
-imgCol.src = './wood_128.jpg';
+imgRow.src = './plaster.jpg';
+imgCol.src = './wood.jpg';
 
 webgl.enable(webgl.DEPTH_TEST);
 
@@ -633,35 +633,35 @@ document.onmousemove = function(e) {
     globalRot = x;
 };
 
-function doCheats() {
-    var div = document.getElementById('cheatWrap');
-    div.style.transform = 'translateY(0)';
+// function doCheats() {
+//     var div = document.getElementById('cheatWrap');
+//     div.style.transform = 'translateY(0)';
 
-    var cheat = document.getElementById('cheat');
-    cheat.focus();
+//     var cheat = document.getElementById('cheat');
+//     cheat.focus();
 
-    isInCheats = true;
-}
+//     isInCheats = true;
+// }
 
-function closeCheats() {
-    var div = document.getElementById('cheatWrap');
-    div.style.transform = 'translateY(0)';
+// function closeCheats() {
+//     var div = document.getElementById('cheatWrap');
+//     div.style.transform = 'translateY(0)';
 
-    var cheat = document.getElementById('cheat');
+//     var cheat = document.getElementById('cheat');
 
-    if(cheat.value.toLowerCase() === 'alloyteam') {
-        console.log('开启秘籍');
-        role.show();
-        document.body.removeChild(div);
-    } else {
-        console.log('密令错误');
-        cheat.value = '';
-        cheat.blur();
-        div.style.transform = 'translateY(150%)';
-    }
+//     if(cheat.value.toLowerCase() === 'alloyteam') {
+//         console.log('开启秘籍');
+//         role.show();
+//         document.body.removeChild(div);
+//     } else {
+//         console.log('密令错误');
+//         cheat.value = '';
+//         cheat.blur();
+//         div.style.transform = 'translateY(150%)';
+//     }
 
-    isInCheats = false;
-}
+//     isInCheats = false;
+// }
 
 function Role() {
     this.main = document.createElement('div');
@@ -672,7 +672,7 @@ function Role() {
     this.disX = oC2.offsetHeight;
     this.disY = oC2.offsetWidth + 1;
 
-    this.x = 145;
+    this.x = 95;
     this.y = -1;
 
 
@@ -803,7 +803,7 @@ Role.prototype.check = function(x, y, cx, cy) {
     cx = Math.abs(cx) < 0.01 ? 0 : cx / Math.abs(cx);
     cy = Math.abs(cy) < 0.01 ? 0 : cy / Math.abs(cy);
 
-    drawDebug(this.y >> 0, this.x >> 0, 'yellow');
+    drawDebug(this.y >> 0, this.x >> 0, 'blue');
     ret = this.isWall(cy, cx);
 
     data = {
